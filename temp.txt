@@ -1,0 +1,2 @@
+
+    "DefaultConnection": "Host=localhost;Port=5432;Database=WeirdAdminPanelDB;Username=foxxie911;Password=32004968;"

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using WeirdAdminPanel.Models;
@@ -18,7 +19,7 @@ namespace WeirdAdminPanel.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (await IsAuthenticatedUser() == false) await Logout();
+            if (await IsAuthenticatedUser() == false) return await Logout();
             List<User> user = await _context.User.ToListAsync();
             List<User> sortedUser = user.OrderByDescending(u => u.LastLogin).ToList();
             return View(sortedUser);
@@ -31,7 +32,25 @@ namespace WeirdAdminPanel.Controllers
         [HttpPost]
         public async Task<ActionResult> Register([Bind("Name, Email, Password")] User user)
         {
+            // For Postgresql
+            // try
+            // {
+            //     _context.User.Add(user);
+            //     await _context.SaveChangesAsync();
+            //     return RedirectToAction("Login");
+            // }
+            // catch (DbUpdateException e)
+            // {
+            //     if (e.InnerException is PostgresException pgE && pgE.SqlState == "23505")
+            //     {
+            //         ModelState.AddModelError("NotUniqueUser", "Email already in use!");
+            //         return View(user);
+            //     }
 
+            //     Console.WriteLine(e);
+            // }
+
+           // For Sql Server 
             try
             {
                 _context.User.Add(user);
@@ -40,7 +59,7 @@ namespace WeirdAdminPanel.Controllers
             }
             catch (DbUpdateException e)
             {
-                if (e.InnerException is PostgresException pgE && pgE.SqlState == "23505")
+                if (e.InnerException is SqlException sqlE && (sqlE.Number == 2601 || sqlE.Number == 2627))
                 {
                     ModelState.AddModelError("NotUniqueUser", "Email already in use!");
                     return View(user);
@@ -105,8 +124,6 @@ namespace WeirdAdminPanel.Controllers
             currentUser.LastLogin = DateTime.UtcNow;
             _context.Update(currentUser);
             await _context.SaveChangesAsync();
-
-            Console.WriteLine(currentUser.LastLogin);
             
             return RedirectToAction("Index");
         }
@@ -131,7 +148,7 @@ namespace WeirdAdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(List<int> selectedId)
         {
-            if (await IsAuthenticatedUser() == false) await Logout();
+            if (await IsAuthenticatedUser() == false) return await Logout();
             if (selectedId.Count != 0)
             {
                 var users = _context.User.Where(u => selectedId.Contains((u.Id))).ToList();
@@ -144,7 +161,7 @@ namespace WeirdAdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> Block(List<int> selectedId)
         {
-            if (await IsAuthenticatedUser() == false) await Logout();
+            if (await IsAuthenticatedUser() == false) return await Logout();
             if (selectedId.Count != 0)
             {
                 _context.User.Where(u => selectedId.Contains(u.Id))
@@ -158,7 +175,7 @@ namespace WeirdAdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> Unblock(List<int> selectedId)
         {
-            if (await IsAuthenticatedUser() == false) await Logout();
+            if (await IsAuthenticatedUser() == false) return await Logout();
             if (selectedId.Count != 0)
             {
                 _context.User.Where(u => selectedId.Contains(u.Id))
