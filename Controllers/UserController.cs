@@ -2,8 +2,10 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Npgsql;
 using WeirdAdminPanel.Models;
 
@@ -88,6 +90,7 @@ namespace WeirdAdminPanel.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([Bind("Email, Password")] User user)
         {
+            if(user.Password == null) return View(user);
 
             if (await IsValidUser(user.Email, user.Password) == false)
             {
@@ -124,6 +127,8 @@ namespace WeirdAdminPanel.Controllers
             currentUser.LastLogin = DateTime.UtcNow;
             _context.Update(currentUser);
             await _context.SaveChangesAsync();
+
+            ViewBag.CurrentUserName = currentUser.Name;
             
             return RedirectToAction("Index");
         }

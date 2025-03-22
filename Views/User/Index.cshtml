@@ -1,10 +1,11 @@
 ﻿@model List<WeirdAdminPanel.Models.User>
 @{
     ViewData["Title"] = "Index";
+    string currentUserName = ViewBag.CurrentUserName;
 }
 
 <div class="d-flex justify-content-between p-4">
-    <h3>Index</h3>
+    <h3>Welcome, @currentUserName </h3>
     <a href="@Url.Action("Logout", "user")" class="btn btn-outline-danger">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
     </a>
@@ -26,18 +27,18 @@
             </button>
         </div>
     </nav>
-    <table class="table">
+    <table class="table table-sm">
         <thead>
             <tr>
-                <th>
+                <th scope="col">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="selectAllId" id="selectAllId">
                     </div>
                 </th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Last Login</th>
-                <th>Blocked</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Last Login</th>
+                <th scope="col">Blocked</th>
             </tr>
         </thead>
         <tbody>

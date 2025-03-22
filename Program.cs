@@ -12,7 +12,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
         options.SlidingExpiration = true;
-        options.AccessDeniedPath = "/user/login";
+        // options.AccessDeniedPath = "/user/login";
     });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
