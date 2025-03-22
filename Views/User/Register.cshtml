@@ -1,0 +1,46 @@
+﻿@model WeirdAdminPanel.Models.User;
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="d-flex justify-content-center">
+    <div class="w-50">
+        <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-5">Create an account</h2>
+
+                <form asp-action="Register" method="post">
+                    <div class="form-group mb-4">
+                        <label for="Name" class="form-label">Name</label>
+                        <input type="text" class="form-control" asp-for="Name" />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="email" class="form-control" asp-for="Email" />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="Password" class="form-label">Password</label>
+                        <input type="password" class="form-control" asp-for="Password" />
+                    </div>
+
+                    @* <div class="form-group mb-4">
+                        <label for="ConfirmPassword" class="form-label">Repeat password</label>
+                        <input type="password" class="form-control" asp-for="ConfirmPassword" />
+                    </div> *@
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                </form>
+
+                <p class="text-center text-muted mt-5 mb-0">
+                    Have already an account?
+                    <a href="@Url.Action("Login", "User")">
+                        <u>Login here</u>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

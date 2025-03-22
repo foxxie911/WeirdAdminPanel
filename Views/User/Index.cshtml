@@ -1,0 +1,88 @@
+﻿@model List<WeirdAdminPanel.Models.User>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="d-flex justify-content-between p-4">
+    <h3>Index</h3>
+    <a href="@Url.Action("Logout", "user")" class="btn btn-outline-danger">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+</div>
+
+<form id="toolbarForm" method="post">
+    <nav class="navbar navbar-light bg-primary rounded-top-2">
+        <div class="d-flex px-3">
+            <button type="submit" class="btn btn-outline-light me-2" formaction="@Url.Action("Block", "user")"
+                id="block">
+                <i class="fa-solid fa-lock"></i> Block
+            </button>
+            <button type="submit" class="btn btn-outline-light me-2" formaction="@Url.Action("Unblock", "user")"
+                id="unblock">
+                <i class="fa-solid fa-unlock"></i>
+            </button>
+            <button type="submit" class="btn btn-danger me-2" formaction="@Url.Action("Delete", "user")">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+    </nav>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="selectAllId" id="selectAllId">
+                    </div>
+                </th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Last Login</th>
+                <th>Blocked</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" value="@user.Id" type="checkbox" name="selectedId"
+                                id="selectedId">
+                        </div>
+                    </td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>@user.LastLogin</td>
+                    <td>@(user.IsBlocked.HasValue?(user.IsBlocked.Value?"Yes":"No"):"Unknown")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+
+@section scripts {
+    <script src="Scripts/jquery-3.7.1.min.js"></script>
+
+    @* <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+        </script> *@
+
+    <script>
+        $(function () {
+            $("#selectAllId").click(function () {
+                $("input[name='selectedId']").prop("checked", this.checked);
+            });
+
+            $("input[name='selectedId']").click(function () {
+                if ($("input[name='selectedId']").length == $("input[name='selectedId']:checked").length) {
+                    $("#selectAllId").prop("checked", true);
+                } else {
+                    $("#selectAllId").prop("checked", false);
+                }
+            });
+        });
+    </script>
+
+
+}
